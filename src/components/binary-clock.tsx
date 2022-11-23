@@ -55,46 +55,18 @@ export const BinaryClock = component$(() => {
 
     return (
         <table class="binclock">
-            <tr>
-                <td className={ store.hour[0][3] }></td>
-                <td className={ store.hour[1][3] }></td>
-                <td width="8"></td>
-                <td className={ store.minute[0][3] }></td>
-                <td className={ store.minute[1][3] }></td>
-                <td width="8"></td>
-                <td className={ store.second[0][3] }></td>
-                <td className={ store.second[1][3] }></td>
-            </tr>
-            <tr>
-                <td className={ store.hour[0][2] }></td>
-                <td className={ store.hour[1][2] }></td>
-                <td width="8"></td>
-                <td className={ store.minute[0][2] }></td>
-                <td className={ store.minute[1][2] }></td>
-                <td width="8"></td>
-                <td className={ store.second[0][2] }></td>
-                <td className={ store.second[1][2] }></td>
-            </tr>
-            <tr>
-                <td className={ store.hour[0][1] }></td>
-                <td className={ store.hour[1][1] }></td>
-                <td width="8"></td>
-                <td className={ store.minute[0][1] }></td>
-                <td className={ store.minute[1][1] }></td>
-                <td width="8"></td>
-                <td className={ store.second[0][1] }></td>
-                <td className={ store.second[1][1] }></td>
-            </tr>
-            <tr>
-                <td className={ store.hour[0][0] }></td>
-                <td className={ store.hour[1][0] }></td>
-                <td width="8"></td>
-                <td className={ store.minute[0][0] }></td>
-                <td className={ store.minute[1][0] }></td>
-                <td width="8"></td>
-                <td className={ store.second[0][0] }></td>
-                <td className={ store.second[1][0] }></td>
-            </tr>
+            {[3,2,1,0].map(i =>
+                <tr>
+                    <td className={ store.hour[0][i] }></td>
+                    <td className={ store.hour[1][i] }></td>
+                    <td width="8"></td>
+                    <td className={ store.minute[0][i] }></td>
+                    <td className={ store.minute[1][i] }></td>
+                    <td width="8"></td>
+                    <td className={ store.second[0][i] }></td>
+                    <td className={ store.second[1][i] }></td>
+                </tr>
+            )}
             <tr>
                 <td colspan="8" align="center" ng-bind="currentTime | date:'hh.mm.ss'">{ store.now }</td>
             </tr>
