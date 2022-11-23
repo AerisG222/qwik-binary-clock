@@ -1,71 +1,100 @@
-import { component$, useStore, useClientEffect$ } from '@builder.io/qwik';
+import { component$, useStore, useClientEffect$, useStylesScoped$ } from '@builder.io/qwik';
+import styles from './binary-clock.css?inline';
 
 export const BinaryClock = component$(() => {
+    useStylesScoped$(styles);
+
+    const classOff = 'bc_off';
+    const classOn = 'bc_on';
+
     const store = useStore({
         now: {},
-        hour: {},
-        minute: {},
-        second: {},
+        hour: [[],[]],
+        minute: [[],[]],
+        second: [[],[]],
     });
 
     useClientEffect$(() => {
         const update = () => {
             const now = new Date();
 
-            store.now = now.toString();
-            store.hour = now.getHours();
-            store.minute = now.getMinutes();
-            store.second = now.getSeconds();
+            store.now = now.toLocaleTimeString();
+
+            store.hour = getTimePart(now.getHours());
+            store.minute = getTimePart(now.getMinutes());
+            store.second = getTimePart(now.getSeconds());
         }
+
         update();
+
         const tmrId = setInterval(update, 1000);
         return () => clearInterval(tmrId);
+
+        function getTimePart(value: number): string[][] {
+            const result:string[][] = [
+                [classOff, classOff, classOff, classOff],
+                [classOff, classOff, classOff, classOff]
+            ];
+            const paddedValue = `${value}`.padStart(2, '0');
+            const tens = parseInt(paddedValue[0], 10);
+            const ones = parseInt(paddedValue[1], 10);
+
+            for(let t = 0; t <= 1; t++)
+            {
+                const digit = t === 0 ? tens : ones;
+
+                for(let o = 0; o <= 3; o++)
+                {
+                    result[t][o] = ((digit & 2**o) === 2**o) ? classOn : classOff;
+                }
+            }
+
+            return result;
+        }
     });
 
     return (
         <table class="binclock">
-            {/*
             <tr>
-                <td class={ bc_on: isOn(h, 8, true), bc_off: isOff(h, 8, true) }></td>
-                <td class={ bc_on: isOn(h, 8, false), bc_off: isOff(h, 8, false) }></td>
+                <td className={ store.hour[0][3] }></td>
+                <td className={ store.hour[1][3] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(m, 8, true), bc_off: isOff(m, 8, true) }></td>
-                <td class={ bc_on: isOn(m, 8, false), bc_off: isOff(m, 8, false) }></td>
+                <td className={ store.minute[0][3] }></td>
+                <td className={ store.minute[1][3] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(s, 8, true), bc_off: isOff(s, 8, true) }></td>
-                <td class={ bc_on: isOn(s, 8, false), bc_off: isOff(s, 8, false) }></td>
+                <td className={ store.second[0][3] }></td>
+                <td className={ store.second[1][3] }></td>
             </tr>
             <tr>
-                <td class={ bc_on: isOn(h, 4, true), bc_off: isOff(h, 4, true) }></td>
-                <td class={ bc_on: isOn(h, 4, false), bc_off: isOff(h, 4, false) }></td>
+                <td className={ store.hour[0][2] }></td>
+                <td className={ store.hour[1][2] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(m, 4, true), bc_off: isOff(m, 4, true) }></td>
-                <td class={ bc_on: isOn(m, 4, false), bc_off: isOff(m, 4, false) }></td>
+                <td className={ store.minute[0][2] }></td>
+                <td className={ store.minute[1][2] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(s, 4, true), bc_off: isOff(s, 4, true) }></td>
-                <td class={ bc_on: isOn(s, 4, false), bc_off: isOff(s, 4, false) }></td>
+                <td className={ store.second[0][2] }></td>
+                <td className={ store.second[1][2] }></td>
             </tr>
             <tr>
-                <td class={ bc_on: isOn(h, 2, true), bc_off: isOff(h, 2, true) }></td>
-                <td class={ bc_on: isOn(h, 2, false), bc_off: isOff(h, 2, false) }></td>
+                <td className={ store.hour[0][1] }></td>
+                <td className={ store.hour[1][1] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(m, 2, true), bc_off: isOff(m, 2, true) }></td>
-                <td class={ bc_on: isOn(m, 2, false), bc_off: isOff(m, 2, false) }></td>
+                <td className={ store.minute[0][1] }></td>
+                <td className={ store.minute[1][1] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(s, 2, true), bc_off: isOff(s, 2, true) }></td>
-                <td class={ bc_on: isOn(s, 2, false), bc_off: isOff(s, 2, false) }></td>
+                <td className={ store.second[0][1] }></td>
+                <td className={ store.second[1][1] }></td>
             </tr>
             <tr>
-                <td class={ bc_on: isOn(h, 1, true), bc_off: isOff(h, 1, true) }></td>
-                <td class={ bc_on: isOn(h, 1, false), bc_off: isOff(h, 1, false) }></td>
+                <td className={ store.hour[0][0] }></td>
+                <td className={ store.hour[1][0] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(m, 1, true), bc_off: isOff(m, 1, true) }></td>
-                <td class={ bc_on: isOn(m, 1, false), bc_off: isOff(m, 1, false) }></td>
+                <td className={ store.minute[0][0] }></td>
+                <td className={ store.minute[1][0] }></td>
                 <td width="8"></td>
-                <td class={ bc_on: isOn(s, 1, true), bc_off: isOff(s, 1, true) }></td>
-                <td class={ bc_on: isOn(s, 1, false), bc_off: isOff(s, 1, false) }></td>
+                <td className={ store.second[0][0] }></td>
+                <td className={ store.second[1][0] }></td>
             </tr>
-            */}
             <tr>
                 <td colspan="8" align="center" ng-bind="currentTime | date:'hh.mm.ss'">{ store.now }</td>
             </tr>
