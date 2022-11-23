@@ -1,5 +1,5 @@
 import { component$, useStore, useClientEffect$, useStylesScoped$ } from '@builder.io/qwik';
-import styles from './binary-clock.css?inline';
+import styles from './binary-clock.scss?inline';
 
 export const BinaryClock = component$(() => {
     useStylesScoped$(styles);
