@@ -8,10 +8,10 @@ export const BinaryClock = component$(() => {
     const classOn = 'bc_on';
 
     const store = useStore({
-        now: {},
-        hour: [[],[]],
-        minute: [[],[]],
-        second: [[],[]],
+        now: '',
+        hour: [[''],['']],
+        minute: [[''],['']],
+        second: [[''],['']],
     });
 
     useClientEffect$(() => {
